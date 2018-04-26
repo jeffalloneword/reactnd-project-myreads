@@ -1,5 +1,6 @@
 import React from 'react'
 import * as BooksAPI from './BooksAPI'
+import ListBooks from './ListBooks'
 import './App.css'
 
 class BooksApp extends React.Component {
@@ -11,7 +12,7 @@ class BooksApp extends React.Component {
      * pages, as well as provide a good URL they can bookmark and share.
      */
     showSearchPage: false,
-    shelfbooks: []
+    shelfbooks: [],
   }
 
   componentDidMount() {
@@ -208,6 +209,11 @@ class BooksApp extends React.Component {
             </div>
           </div>
         )}
+        <div>
+          <ListBooks
+            shelfbooks={this.state.shelfbooks}
+          />
+        </div>
       </div>
     )
   }
