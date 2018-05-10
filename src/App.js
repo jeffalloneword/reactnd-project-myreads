@@ -1,6 +1,6 @@
 import React from 'react'
 import * as BooksAPI from './BooksAPI'
-import ListBooks from './ListBooks'
+import OneShelf from './OneShelf'
 import './App.css'
 
 class BooksApp extends React.Component {
@@ -25,6 +25,13 @@ class BooksApp extends React.Component {
   }
 
   render() {
+
+    const currentlyReading = this.state.shelfbooks.filter(shelfbook => shelfbook.shelf === "currentlyReading")
+
+    const wantToRead = this.state.shelfbooks.filter(shelfbook => shelfbook.shelf === "wantToRead")
+
+    const haveRead = this.state.shelfbooks.filter(shelfbook => shelfbook.shelf === "read")
+
     return (
       <div className="app">
         {this.state.showSearchPage ? (
@@ -50,19 +57,33 @@ class BooksApp extends React.Component {
           </div>
         ) : (
           <div className="list-books">
-
-
-            <div className="open-search">
-              <a onClick={() => this.setState({ showSearchPage: true })}>Add a book</a>
+            <div className="list-books-title">
+              <h1>MyReads</h1>
+            </div>
+            <div>
+              <OneShelf
+                shelftitle="Currently Reading"
+                shelfbooks={currentlyReading}
+                selectedvalue={'currentlyReading'}
+              />
+            </div>
+            <div>
+              <OneShelf
+                shelftitle="Want to Read"
+                shelfbooks={wantToRead}
+                selectedvalue={'wantToRead'}
+              />
+            </div>
+            <div>
+              <OneShelf
+                shelftitle="Read"
+                shelfbooks={haveRead}
+                selectedvalue={'read'}
+              />
             </div>
           </div>
-        )}
-        <div>
-          <ListBooks
-            shelfbooks={this.state.shelfbooks}
-          />
-        </div>
-      </div>
+      )}
+    </div>
     )
   }
 }
