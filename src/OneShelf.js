@@ -12,7 +12,7 @@ class OneShelf extends Component {
     return (
       <div>
         <div className="bookshelf">
-          <h2 className="bookshelf-title">{this.props.shelftitle.toString()}</h2>
+          <h2 className="bookshelf-title">{this.props.shelftitle}</h2>
           <div className="bookshelf-books">
             <ol className="books-grid">
               {shelfbooks.map((shelfbook) => (
@@ -41,7 +41,6 @@ class OneShelf extends Component {
         </div>
       </div>
     )
-
   }
 }
 

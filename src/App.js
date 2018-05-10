@@ -62,21 +62,21 @@ class BooksApp extends React.Component {
             </div>
             <div>
               <OneShelf
-                shelftitle="Currently Reading"
+                shelftitle={'Currently Reading'}
                 shelfbooks={currentlyReading}
                 selectedvalue={'currentlyReading'}
               />
             </div>
             <div>
               <OneShelf
-                shelftitle="Want to Read"
+                shelftitle={'Want to Read'}
                 shelfbooks={wantToRead}
                 selectedvalue={'wantToRead'}
               />
             </div>
             <div>
               <OneShelf
-                shelftitle="Read"
+                shelftitle={'Read'}
                 shelfbooks={haveRead}
                 selectedvalue={'read'}
               />
