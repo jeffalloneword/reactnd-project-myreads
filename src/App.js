@@ -24,13 +24,14 @@ class BooksApp extends React.Component {
       })
   }
 
+  changeShelf = (shelfbook, event) => {
+    this.setState((currentState) => ({
+      shelfbooks: currentState.shelfbooks.set(shelfbook, {value: event.target.value})
+    }))
+  }
+
+
   render() {
-
-    const currentlyReading = this.state.shelfbooks.filter(shelfbook => shelfbook.shelf === "currentlyReading")
-
-    const wantToRead = this.state.shelfbooks.filter(shelfbook => shelfbook.shelf === "wantToRead")
-
-    const haveRead = this.state.shelfbooks.filter(shelfbook => shelfbook.shelf === "read")
 
     return (
       <div className="app">
@@ -63,22 +64,22 @@ class BooksApp extends React.Component {
             <div>
               <OneShelf
                 shelftitle={'Currently Reading'}
-                shelfbooks={currentlyReading}
-                selectedvalue={'currentlyReading'}
+                shelfbooks={this.state.shelfbooks.filter(shelfbook => shelfbook.shelf === "currentlyReading")}
+                onChangeShelf={this.changeShelf}
               />
             </div>
             <div>
               <OneShelf
                 shelftitle={'Want to Read'}
-                shelfbooks={wantToRead}
-                selectedvalue={'wantToRead'}
+                shelfbooks={this.state.shelfbooks.filter(shelfbook => shelfbook.shelf === "wantToRead")}
+                onChangeShelf={this.changeShelf}
               />
             </div>
             <div>
               <OneShelf
                 shelftitle={'Read'}
-                shelfbooks={haveRead}
-                selectedvalue={'read'}
+                shelfbooks={this.state.shelfbooks.filter(shelfbook => shelfbook.shelf === "read")}
+                onChangeShelf={this.changeShelf}
               />
             </div>
           </div>
