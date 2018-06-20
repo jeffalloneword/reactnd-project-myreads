@@ -15,21 +15,25 @@ class BooksApp extends React.Component {
     shelfbooks: [],
   }
 
+  changeShelf = (book, shelf) => {
+    if (this.state.shelfbooks) {
+      BooksAPI.update(book, shelf).then(() => {
+        book.shelf = shelf;
+        this.setState(state => (() => {
+          state.shelfbooks.filter(shelfbook => shelfbook.id !== book.id).concat([ book ])
+        }))
+      })
+      }
+  }
+
+
   componentDidMount() {
-    BooksAPI.getAll()
-      .then((shelfbooks) => {
+    BooksAPI.getAll().then((shelfbooks) => {
         this.setState(() => ({
           shelfbooks
         }))
       })
   }
-
-  changeShelf = (shelfbook, event) => {
-    this.setState((currentState) => ({
-      shelfbooks: currentState.shelfbooks.set(shelfbook, {value: event.target.value})
-    }))
-  }
-
 
   render() {
 
@@ -88,5 +92,7 @@ class BooksApp extends React.Component {
     )
   }
 }
+
+
 
 export default BooksApp

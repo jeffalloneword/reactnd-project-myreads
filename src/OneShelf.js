@@ -6,6 +6,10 @@ class OneShelf extends Component {
     shelfbooks: PropTypes.array.isRequired,
   }
 
+  changeShelf = (book, shelf) => {
+    this.props.onChangeShelf(book, shelf)
+  }
+
   render() {
     const { shelfbooks } = this.props
 
@@ -24,7 +28,7 @@ class OneShelf extends Component {
                       <div className="book-shelf-changer">
                         <select
                           value={shelfbook.shelf}
-                          onChange={this.onChangeShelf}
+                          onChange={(event) => this.changeShelf(shelfbook, event.target.value)}
                           >
                           <option value="none" disabled>Move to...</option>
                           <option value="currentlyReading">Currently Reading</option>
