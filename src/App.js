@@ -1,17 +1,12 @@
 import React from 'react'
 import * as BooksAPI from './BooksAPI'
 import OneShelf from './OneShelf'
+import { Link } from 'react-router-dom'
+import { Route } from 'react-router-dom'
 import './App.css'
 
 class BooksApp extends React.Component {
   state = {
-    /**
-     * TODO: Instead of using this state variable to keep track of which page
-     * we're on, use the URL in the browser's address bar. This will ensure that
-     * users can use the browser's back and forward buttons to navigate between
-     * pages, as well as provide a good URL they can bookmark and share.
-     */
-    showSearchPage: false,
     shelfbooks: [],
   }
 
@@ -23,26 +18,30 @@ class BooksApp extends React.Component {
           state.shelfbooks.filter(shelfbook => shelfbook.id !== book.id).concat([ book ])
         }))
       })
-      }
+    }
   }
 
 
   componentDidMount() {
     BooksAPI.getAll().then((shelfbooks) => {
-        this.setState(() => ({
-          shelfbooks
-        }))
-      })
+      this.setState(() => ({
+        shelfbooks
+      }))
+    })
   }
 
   render() {
 
     return (
       <div className="app">
-        {this.state.showSearchPage ? (
+        <Route path='/search' render={() => (
           <div className="search-books">
             <div className="search-books-bar">
-              <a className="close-search" onClick={() => this.setState({ showSearchPage: false })}>Close</a>
+              <Link
+                className="close-search"
+                to='/'
+                title='Back to MyReads'
+                >Close</Link>
               <div className="search-books-input-wrapper">
                 {/*
                   NOTES: The search from BooksAPI is limited to a particular set of search terms.
@@ -51,44 +50,53 @@ class BooksApp extends React.Component {
 
                   However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
                   you don't find a specific author or title. Every search is limited by search terms.
-                */}
-                <input type="text" placeholder="Search by title or author"/>
+                  */}
+                  <input type="text" placeholder="Search by title or author"/>
 
+                </div>
+              </div>
+              <div className="search-books-results">
+                <ol className="books-grid"></ol>
               </div>
             </div>
-            <div className="search-books-results">
-              <ol className="books-grid"></ol>
-            </div>
-          </div>
-        ) : (
+          )}
+        />
+        <Route exact path='/' render={() => (
           <div className="list-books">
             <div className="list-books-title">
               <h1>MyReads</h1>
             </div>
-            <div>
-              <OneShelf
-                shelftitle={'Currently Reading'}
-                shelfbooks={this.state.shelfbooks.filter(shelfbook => shelfbook.shelf === "currentlyReading")}
-                onChangeShelf={this.changeShelf}
-              />
+            <div className="open-search">
+              <Link
+                to='/search'
+                title="Find a book to add"
+                >Add</Link>
+              </div>
+              <div>
+                <OneShelf
+                  shelftitle={'Currently Reading'}
+                  shelfbooks={this.state.shelfbooks.filter(shelfbook => shelfbook.shelf === "currentlyReading")}
+                  onChangeShelf={this.changeShelf}
+                />
+              </div>
+              <div>
+                <OneShelf
+                  shelftitle={'Want to Read'}
+                  shelfbooks={this.state.shelfbooks.filter(shelfbook => shelfbook.shelf === "wantToRead")}
+                  onChangeShelf={this.changeShelf}
+                />
+              </div>
+              <div>
+                <OneShelf
+                  shelftitle={'Read'}
+                  shelfbooks={this.state.shelfbooks.filter(shelfbook => shelfbook.shelf === "read")}
+                  onChangeShelf={this.changeShelf}
+                />
+              </div>
             </div>
-            <div>
-              <OneShelf
-                shelftitle={'Want to Read'}
-                shelfbooks={this.state.shelfbooks.filter(shelfbook => shelfbook.shelf === "wantToRead")}
-                onChangeShelf={this.changeShelf}
-              />
-            </div>
-            <div>
-              <OneShelf
-                shelftitle={'Read'}
-                shelfbooks={this.state.shelfbooks.filter(shelfbook => shelfbook.shelf === "read")}
-                onChangeShelf={this.changeShelf}
-              />
-            </div>
-          </div>
-      )}
-    </div>
+          )}
+        />
+      </div>
     )
   }
 }
