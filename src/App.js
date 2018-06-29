@@ -8,6 +8,8 @@ import './App.css'
 class BooksApp extends React.Component {
   state = {
     shelfbooks: [],
+    searchresults: [],
+    query: ''
   }
 
   changeShelf = (book, shelf) => {
@@ -21,86 +23,114 @@ class BooksApp extends React.Component {
     }
   }
 
-
   componentDidMount() {
-    BooksAPI.getAll().then((shelfbooks) => {
-      this.setState(() => ({
-        shelfbooks
-      }))
-    })
+    BooksAPI.getAll()
+      .then((shelfbooks) => {
+        this.setState(() => ({
+          shelfbooks
+        }))
+      })
+  }
+
+  updateQuery = (query) => {
+    console.log('query: ', query)
+    this.setState({ query: query })
+
+    BooksAPI.search(query)
+      .then((resultsbooks) => {
+
+        // set the shelf on all the search result books to "none"
+        resultsbooks.map((resultsbook) => {
+          resultsbook.shelf = "none"
+        })
+
+        // find books matching those already on my shelves and set to same shelf value
+        for (const shelfbook of this.state.shelfbooks) {
+          resultsbooks.map((resultsbook) => {
+            if (resultsbook.id === shelfbook.id) {
+              console.log('shelfbook', shelfbook.shelf)
+              resultsbook.shelf = shelfbook.shelf
+            }
+          })
+        }
+
+        this.setState(() => ({
+          searchresults: resultsbooks
+        }))
+      })
   }
 
   render() {
 
+    const { query, shelfbooks, searchresults } = this.state
+
+
     return (
-      <div className="app">
-        <Route path='/search' render={() => (
-          <div className="search-books">
-            <div className="search-books-bar">
+      <div className='app'>
+        <Route path='/search' render={({ history }) => (
+          <div className='search-books'>
+            <div className='search-books-bar'>
               <Link
-                className="close-search"
-                to='/'
+                className='close-search'
+                to={{
+                  pathname: '/'
+                }}
                 title='Back to MyReads'
                 >Close</Link>
-              <div className="search-books-input-wrapper">
-                {/*
-                  NOTES: The search from BooksAPI is limited to a particular set of search terms.
-                  You can find these search terms here:
-                  https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
-
-                  However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
-                  you don't find a specific author or title. Every search is limited by search terms.
-                  */}
-                  <input type="text" placeholder="Search by title or author"/>
-
-                </div>
-              </div>
-              <div className="search-books-results">
-                <ol className="books-grid"></ol>
+              <div className='search-books-input-wrapper'>
+                <input
+                  type='text'
+                  placeholder='Search by title or author'
+                  value={query}
+                  onChange={(event) => this.updateQuery(event.target.value)}
+                />
               </div>
             </div>
-          )}
-        />
+            <div className='search-books-results'>
+              <ol className='books-grid'></ol>
+              {console.log(searchresults)}
+            </div>
+          </div>
+         )} />
         <Route exact path='/' render={() => (
-          <div className="list-books">
-            <div className="list-books-title">
+          <div className='list-books'>
+            <div className='list-books-title'>
               <h1>MyReads</h1>
             </div>
-            <div className="open-search">
+            <div className='open-search'>
               <Link
-                to='/search'
-                title="Find a book to add"
+                to={{
+                  pathname: '/search'
+                }}
+                title='Find a book to add'
                 >Add</Link>
               </div>
               <div>
                 <OneShelf
                   shelftitle={'Currently Reading'}
-                  shelfbooks={this.state.shelfbooks.filter(shelfbook => shelfbook.shelf === "currentlyReading")}
+                  shelfbooks={shelfbooks.filter(shelfbook => shelfbook.shelf === 'currentlyReading')}
                   onChangeShelf={this.changeShelf}
                 />
               </div>
               <div>
                 <OneShelf
                   shelftitle={'Want to Read'}
-                  shelfbooks={this.state.shelfbooks.filter(shelfbook => shelfbook.shelf === "wantToRead")}
+                  shelfbooks={shelfbooks.filter(shelfbook => shelfbook.shelf === 'wantToRead')}
                   onChangeShelf={this.changeShelf}
                 />
               </div>
               <div>
                 <OneShelf
                   shelftitle={'Read'}
-                  shelfbooks={this.state.shelfbooks.filter(shelfbook => shelfbook.shelf === "read")}
+                  shelfbooks={this.state.shelfbooks.filter(shelfbook => shelfbook.shelf === 'read')}
                   onChangeShelf={this.changeShelf}
                 />
               </div>
             </div>
-          )}
-        />
+          )} />
       </div>
     )
   }
 }
-
-
 
 export default BooksApp
