@@ -32,6 +32,10 @@ class BooksApp extends React.Component {
       })
   }
 
+  clearQuery = () => {
+    this.setState({query: ''})
+  }
+
   updateQuery = (query) => {
     console.log('query: ', query)
     this.setState({ query: query })
@@ -55,7 +59,7 @@ class BooksApp extends React.Component {
         }
 
         this.setState(() => ({
-          searchresults: resultsbooks
+          searchresults: resultsbooks,
         }))
       })
   }
@@ -76,6 +80,7 @@ class BooksApp extends React.Component {
                   pathname: '/'
                 }}
                 title='Back to MyReads'
+                onClick={this.clearQuery}
                 >Close</Link>
               <div className='search-books-input-wrapper'>
                 <input
@@ -103,6 +108,7 @@ class BooksApp extends React.Component {
                   pathname: '/search'
                 }}
                 title='Find a book to add'
+                onClick={this.clearQuery}
                 >Add</Link>
               </div>
               <div>
@@ -127,7 +133,8 @@ class BooksApp extends React.Component {
                 />
               </div>
             </div>
-          )} />
+          )}
+        />
       </div>
     )
   }
