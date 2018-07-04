@@ -12,17 +12,6 @@ class BooksApp extends React.Component {
     query: ''
   }
 
-  changeShelf = (book, shelf) => {
-    if (this.state.shelfbooks) {
-      BooksAPI.update(book, shelf).then(() => {
-        book.shelf = shelf;
-        this.setState(state => (() => {
-          state.shelfbooks.filter(shelfbook => shelfbook.id !== book.id).concat([ book ])
-        }))
-      })
-    }
-  }
-
   componentDidMount() {
     BooksAPI.getAll()
       .then((shelfbooks) => {
@@ -32,43 +21,72 @@ class BooksApp extends React.Component {
       })
   }
 
+  changeShelf = (book, shelf) => {
+    if (this.state.searchresults.length > 0) {
+      BooksAPI.update(book, shelf).then(() => {
+        book.shelf = shelf;
+        this.setState(state => (() => {
+          state.shelfbooks.filter(shelfbook => shelfbook.id !== book.id).concat([ book ])
+        }))
+      })
+    }
+    else if (this.state.shelfbooks.length > 0) {
+      BooksAPI.update(book, shelf).then(() => {
+        book.shelf = shelf;
+        this.setState(state => (() => {
+          state.shelfbooks.filter(shelfbook => shelfbook.id !== book.id).concat([ book ])
+        }))
+      })
+    }
+  }
+
   clearQuery = () => {
-    this.setState({query: ''})
+    this.setState({query: '', searchresults: []})
   }
 
   updateQuery = (query) => {
-    console.log('query: ', query)
-    this.setState({ query: query })
 
-    BooksAPI.search(query)
-      .then((resultsbooks) => {
+      console.log('query: ', query.length)
+      this.setState({ query: query })
 
-        // set the shelf on all the search result books to "none"
-        resultsbooks.map((resultsbook) => {
-          resultsbook.shelf = "none"
-        })
+      BooksAPI.search(query)
+        .then((resultsbooks) => {
 
-        // find books matching those already on my shelves and set to same shelf value
-        for (const shelfbook of this.state.shelfbooks) {
-          resultsbooks.map((resultsbook) => {
-            if (resultsbook.id === shelfbook.id) {
-              console.log('shelfbook', shelfbook.shelf)
-              resultsbook.shelf = shelfbook.shelf
+          //check for results
+          if (resultsbooks && resultsbooks.length > 0) {
+
+            // set the shelf on all the search result books to "none"
+            resultsbooks.map((resultsbook) => {
+              resultsbook.shelf = "none"
+            })
+
+            // find books matching those already on my shelves and set to same shelf value
+            for (const shelfbook of this.state.shelfbooks) {
+              resultsbooks.map((resultsbook) => {
+                if (resultsbook.id === shelfbook.id) {
+                  //console.log('shelfbook', shelfbook.shelf)
+                  resultsbook.shelf = shelfbook.shelf
+                }
+              })
             }
-          })
-        }
+            console.log('rb', resultsbooks.length)
 
-        this.setState(() => ({
-          searchresults: resultsbooks,
-        }))
+            this.setState(() => ({
+              searchresults: resultsbooks,
+            }))
+
+          }
+          else {
+            this.setState(() => ({
+              searchresults: [],
+            }))
+          }
       })
+
+
   }
 
   render() {
-
-    const { query, shelfbooks, searchresults } = this.state
-
-
     return (
       <div className='app'>
         <Route path='/search' render={({ history }) => (
@@ -86,14 +104,17 @@ class BooksApp extends React.Component {
                 <input
                   type='text'
                   placeholder='Search by title or author'
-                  value={query}
+                  value={this.state.query}
                   onChange={(event) => this.updateQuery(event.target.value)}
                 />
               </div>
             </div>
-            <div className='search-books-results'>
-              <ol className='books-grid'></ol>
-              {console.log(searchresults)}
+            <div>
+              <OneShelf
+                shelftitle={'Search Results'}
+                shelfbooks={this.state.searchresults}
+                onChangeShelf={this.changeShelf}
+              />
             </div>
           </div>
          )} />
@@ -114,14 +135,14 @@ class BooksApp extends React.Component {
               <div>
                 <OneShelf
                   shelftitle={'Currently Reading'}
-                  shelfbooks={shelfbooks.filter(shelfbook => shelfbook.shelf === 'currentlyReading')}
+                  shelfbooks={this.state.shelfbooks.filter(shelfbook => shelfbook.shelf === 'currentlyReading')}
                   onChangeShelf={this.changeShelf}
                 />
               </div>
               <div>
                 <OneShelf
                   shelftitle={'Want to Read'}
-                  shelfbooks={shelfbooks.filter(shelfbook => shelfbook.shelf === 'wantToRead')}
+                  shelfbooks={this.state.shelfbooks.filter(shelfbook => shelfbook.shelf === 'wantToRead')}
                   onChangeShelf={this.changeShelf}
                 />
               </div>

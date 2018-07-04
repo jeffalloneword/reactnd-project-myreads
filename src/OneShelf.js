@@ -11,15 +11,13 @@ class OneShelf extends Component {
   }
 
   render() {
-    const { shelfbooks } = this.props
-
     return (
       <div>
         <div className='bookshelf'>
           <h2 className='bookshelf-title'>{this.props.shelftitle}</h2>
           <div className='bookshelf-books'>
             <ol className='books-grid'>
-              {shelfbooks.map((shelfbook) => (
+              {this.props.shelfbooks.map((shelfbook) => (
                 <li key={shelfbook.id}>
                   <div className='book'>
                     <div className='book-top'>
