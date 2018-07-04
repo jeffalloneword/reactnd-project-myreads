@@ -21,7 +21,11 @@ class OneShelf extends Component {
                 <li key={shelfbook.id}>
                   <div className='book'>
                     <div className='book-top'>
-                      <div className='book-cover' style={{ width: 128, height: 193, backgroundImage: `url(${shelfbook.imageLinks.thumbnail})`  }}>
+                      <div className='book-cover'
+                        style={{
+                          width: 128,
+                          height: 193,
+                          backgroundImage: `url(${shelfbook.imageLinks ? shelfbook.imageLinks.thumbnail : 'no image' })`  }}>
                       </div>
                       <div className='book-shelf-changer'>
                         <select
@@ -36,8 +40,8 @@ class OneShelf extends Component {
                         </select>
                       </div>
                     </div>
-                    <div className='book-title'>{shelfbook.title}</div>
-                    <div className='book-authors'>{shelfbook.authors}</div>
+                    <div className='book-title'>{shelfbook.title ? shelfbook.title : 'unknown'}</div>
+                    <div className='book-authors'>{shelfbook.authors ? shelfbook.authors : 'unknown'}</div>
                   </div>
                 </li>
               ))}
