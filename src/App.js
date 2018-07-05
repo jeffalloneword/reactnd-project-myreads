@@ -49,7 +49,6 @@ class BooksApp extends React.Component {
 
   updateQuery = (query) => {
 
-      console.log('query: ', query.length)
       this.setState({ query: query })
 
       BooksAPI.search(query)
@@ -67,12 +66,10 @@ class BooksApp extends React.Component {
             for (const shelfbook of this.state.shelfbooks) {
               resultsbooks.map((resultsbook) => {
                 if (resultsbook.id === shelfbook.id) {
-                  //console.log('shelfbook', shelfbook.shelf)
                   resultsbook.shelf = shelfbook.shelf
                 }
               })
             }
-            console.log('rb', resultsbooks.length)
 
             this.setState(() => ({
               searchresults: resultsbooks

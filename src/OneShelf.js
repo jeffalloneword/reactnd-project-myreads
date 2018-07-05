@@ -29,10 +29,10 @@ class OneShelf extends Component {
                       </div>
                       <div className='book-shelf-changer'>
                         <select
-                          value={shelfbook.shelf}
+                          value={shelfbook.shelf ? shelfbook.shelf : 'none'}
                           onChange={(event) => this.changeShelf(shelfbook, event.target.value)}
                           >
-                          <option value='none' disabled>Move to...</option>
+                          <option value='zero' disabled>Move to...</option>
                           <option value='currentlyReading'>Currently Reading</option>
                           <option value='wantToRead'>Want to Read</option>
                           <option value='read'>Read</option>
